@@ -1,0 +1,25 @@
+---
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<button class="theme-switcher" type="button" data-theme-switcher aria-label={label} aria-pressed="false">
+  <span class="theme-sun" aria-hidden="true">☀</span>
+  <span class="theme-moon" aria-hidden="true">☾</span>
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-theme-switcher]');
+
+  button?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+
+    root.dataset.theme = theme;
+    localStorage.setItem('cv-lp:theme', theme);
+    button.setAttribute('aria-pressed', String(theme === 'dark'));
+  });
+</script>

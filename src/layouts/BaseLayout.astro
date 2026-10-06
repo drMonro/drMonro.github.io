@@ -1,0 +1,84 @@
+---
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import ThemeSwitcher from '../components/ThemeSwitcher.astro';
+import { messages, type Locale } from '../i18n/messages';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  themeLabel: string;
+  languageLabel: string;
+}
+
+const { locale, title, description, themeLabel, languageLabel } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const t = messages[locale];
+---
+
+<!doctype html>
+<html lang={locale} data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <script is:inline>
+      (() => {
+        const savedTheme = localStorage.getItem('cv-lp:theme');
+        const theme = savedTheme === 'light' || savedTheme === 'dark'
+          ? savedTheme
+          : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+
+    <script is:inline define:vars={{ base, locale }}>
+      (() => {
+        const savedLocale = localStorage.getItem('cv-lp:locale');
+        const preferredLocale = savedLocale === 'ru' || savedLocale === 'en'
+          ? savedLocale
+          : navigator.language.toLowerCase().startsWith('ru') ? 'ru' : 'en';
+
+        if (!savedLocale) {
+          localStorage.setItem('cv-lp:locale', preferredLocale);
+        }
+
+        if (locale === 'ru' && preferredLocale === 'en') {
+          location.replace(`${base}en/`);
+        }
+      })();
+    </script>
+  </head>
+  <body style={`--hero-background-light: url('${base}images/hero-room-light-fhd.webp'); --hero-background-dark: url('${base}images/hero-room-dark-fhd.webp')`}>
+    <header class="site-header">
+      <a class="brand" href={locale === 'en' ? `${base}en/` : base} aria-label={t.brand.name}>
+        <span class="brand-mark">{t.brand.mark}</span>
+        <span class="brand-copy"><b>{t.brand.name}</b><small>{t.brand.role}</small></span>
+      </a>
+
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="#projects"><span>01</span>{t.nav.work}</a>
+        <a href="#about"><span>02</span>{t.nav.about}</a>
+        <a href="#contact"><span>03</span>{t.nav.contact}</a>
+      </nav>
+
+      <div class="header-controls">
+        <LanguageSwitcher locale={locale} label={languageLabel} />
+        <ThemeSwitcher label={themeLabel} />
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <script>
+      import '../scripts/animations';
+    </script>
+  </body>
+</html>

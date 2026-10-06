@@ -1,0 +1,30 @@
+---
+import type { Locale } from '../i18n/messages';
+
+interface Props {
+  locale: Locale;
+  label: string;
+}
+
+const { locale, label } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const targetLocale: Locale = locale === 'ru' ? 'en' : 'ru';
+const href = targetLocale === 'en' ? `${base}en/` : base;
+---
+
+<a class="language-switcher" href={href} data-locale-link={targetLocale} aria-label={label}>
+  <span class:list={{ active: locale === 'ru' }}>RU</span>
+  <span class:list={{ active: locale === 'en' }}>EN</span>
+</a>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-locale-link]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const locale = link.dataset.localeLink;
+
+      if (locale) {
+        localStorage.setItem('cv-lp:locale', locale);
+      }
+    });
+  });
+</script>

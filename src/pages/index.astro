@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { messages } from '../i18n/messages';
+
+const locale = 'ru';
+const t = messages[locale];
+---
+
+<BaseLayout locale={locale} title={t.meta.title} description={t.meta.description} themeLabel={t.theme} languageLabel={t.language}>
+  <section class="hero" id="top">
+    <div class="hero-content" data-reveal>
+      <p class="eyebrow">{t.hero.eyebrow}</p>
+      <h1>{t.hero.title}</h1>
+      <p class="hero-role">{t.hero.role}</p>
+      <p class="lead">{t.hero.description}</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#projects">{t.hero.workAction}<span>↗</span></a>
+        <a class="text-link" href="#about">{t.hero.aboutAction}</a>
+      </div>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true"><span>{t.hero.scroll}</span><i>↓</i></div>
+
+    <div class="hero-details" data-reveal>
+      <div class="hero-stats">
+        <div><b>{t.hero.experience}</b><span>{t.hero.experienceLabel}</span></div>
+        <div><b>{t.hero.cases}</b><span>{t.hero.casesLabel}</span></div>
+        <div class="skill-list">{t.hero.skills.map((skill) => <span>{skill}</span>)}</div>
+      </div>
+      <a class="availability" href="#contact">
+        <span class="availability-copy"><b><i></i>{t.hero.availability}</b><small>⌖&nbsp;&nbsp; {t.hero.location}</small></span>
+        <span class="availability-arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="projects" id="projects">
+    <header class="projects-header"><p>{t.projects.eyebrow}</p><a class="text-link" href="#contact">{t.projects.all}<span>→</span></a></header>
+    <div class="project-grid">
+      {t.projects.items.map((project) => (
+        <a class={`project-card ${project.variant}`} href="#contact">
+          <span class="project-copy"><b>{project.title}</b><small>{project.description}</small></span>
+          <span class="project-arrow">↗</span>
+          <span class="project-preview" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="anchor-section" id="about" aria-label="Обо мне"></section>
+  <section class="anchor-section" id="contact" aria-label="Контакты"></section>
+</BaseLayout>
